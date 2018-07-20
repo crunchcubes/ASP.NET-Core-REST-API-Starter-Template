@@ -31,7 +31,7 @@ namespace Restful.Api.Controllers.Milk
         private readonly IUrlHelper _urlHelper;
         private readonly IPropertyMappingContainer _propertyMappingContainer;
         private readonly ITypeHelperService _typeHelperService;
-        
+
         public ProductController(
             IUnitOfWork unitOfWork,
             IProductRepository productRepository,
@@ -126,7 +126,7 @@ namespace Restful.Api.Controllers.Milk
                 return Ok(productResources.ToDynamicIEnumerable(productResourceParameters.Fields));
             }
         }
-        
+
         [DisableCors]
         [HttpGet("{id}", Name = "GetProduct")]
         public async Task<IActionResult> GetProduct(int id, string fields = null)
@@ -159,6 +159,11 @@ namespace Restful.Api.Controllers.Milk
                 return BadRequest();
             }
 
+            if (!ModelState.IsValid)
+            {
+                return new UnprocessableEntityObjectResult(ModelState);
+            }
+
             var productModel = _mapper.Map<Product>(product);
             _productRepository.AddProduct(productModel);
             if (!await _unitOfWork.SaveAsync())
@@ -166,7 +171,7 @@ namespace Restful.Api.Controllers.Milk
                 throw new Exception("Error occurred when adding");
             }
 
-            var productResource = Mapper.Map<ProductResource>(productModel);
+            var productResource = _mapper.Map<ProductResource>(productModel);
 
             var links = CreateLinksForProduct(productModel.Id);
             var linkedProductResource = productResource.ToDynamic() as IDictionary<string, object>;
