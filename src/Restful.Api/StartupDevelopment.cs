@@ -26,12 +26,12 @@ using Serilog.Events;
 
 namespace Restful.Api
 {
-    public class Startup
+    public class StartupDevelopment
     {
         public static IConfiguration Configuration { get; set; }
         private readonly ILoggerFactory _loggerFactory;
 
-        public Startup(IConfiguration configuration, ILoggerFactory loggerFactory)
+        public StartupDevelopment(IConfiguration configuration, ILoggerFactory loggerFactory)
         {
             Log.Logger = new LoggerConfiguration()
                 .MinimumLevel.Debug()
@@ -61,7 +61,6 @@ namespace Restful.Api
 
             services.AddDbContext<MyContext>(options =>
             {
-                // options.UseSqlServer(Configuration["ConnectionStrings:DefaultConnection"]);
                 options.UseInMemoryDatabase("RESTfulAPI");
                 options.UseLoggerFactory(_loggerFactory);
             });
@@ -123,7 +122,7 @@ namespace Restful.Api
                 var policy = new AuthorizationPolicyBuilder()
                     .RequireAuthenticatedUser()
                     .Build();
-                // options.Filters.Add(new AuthorizeFilter(policy));
+                options.Filters.Add(new AuthorizeFilter(policy));
             });
 
             services.AddMemoryCache();
@@ -152,10 +151,10 @@ namespace Restful.Api
             {
                 app.UseHsts();
             }
-            // app.UseIpRateLimiting();
+            app.UseIpRateLimiting();
             app.UseCors("AllowAngularDevOrigin");
-            // app.UseHttpsRedirection();
-            // app.UseAuthentication();
+            app.UseHttpsRedirection();
+            app.UseAuthentication();
             app.UseResponseCaching();
             app.UseHttpCacheHeaders();
 

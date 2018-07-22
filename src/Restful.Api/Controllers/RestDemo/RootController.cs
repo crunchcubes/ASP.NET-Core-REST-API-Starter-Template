@@ -2,7 +2,7 @@
 using Microsoft.AspNetCore.Mvc;
 using Restful.Infrastructure.Resources.Hateoas;
 
-namespace Restful.Api.Controllers
+namespace Restful.Api.Controllers.RestDemo
 {
     [Route("api")]
     public class RootController: Controller

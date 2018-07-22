@@ -30,15 +30,22 @@ namespace Restful.Api.Helpers
             // Country
             "application/vnd.solenovex.country.create+json",
             "application/vnd.solenovex.country.update+json",
-            "application/vnd.solenovex.countrywithcontinent.create+json"
+            "application/vnd.solenovex.countrywithcontinent.create+json",
+            // Product
+            "application/vnd.solenovex.product.create+json",
+            "application/vnd.solenovex.product.update+json",
+            "application/vnd.solenovex.productwithcontinent.create+json"
         };
 
         public static readonly List<string> OutputMediaTypes = new List<string>
         {
-            // Country
             "application/vnd.solenovex.hateoas+json",
+            // Country
             "application/vnd.solenovex.country.display+json",
-            "application/vnd.solenovex.countrywithcontinent.display+json"
+            "application/vnd.solenovex.countrywithcontinent.display+json",
+            // Product
+            "application/vnd.solenovex.product.display+json",
+            "application/vnd.solenovex.productwithcontinent.display+json"
         };
     }
 }

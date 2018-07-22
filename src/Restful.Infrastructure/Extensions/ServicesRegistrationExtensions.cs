@@ -9,7 +9,9 @@ using Restful.Infrastructure.Interfaces;
 using Restful.Infrastructure.Repositories;
 using Restful.Infrastructure.Repositories.Milk;
 using Restful.Infrastructure.Repositories.RestDemo;
+using Restful.Infrastructure.Resources.Milk;
 using Restful.Infrastructure.Resources.Milk.PropertyMappings;
+using Restful.Infrastructure.Resources.Milk.Validators;
 using Restful.Infrastructure.Resources.RestDemo;
 using Restful.Infrastructure.Resources.RestDemo.PropertyMappings;
 using Restful.Infrastructure.Resources.RestDemo.Validators;
@@ -26,6 +28,9 @@ namespace Restful.Infrastructure.Extensions
             services.AddTransient<IValidator<CityAddResource>, CityAddOrUpdateResourceValidator<CityAddResource>>();
             services.AddTransient<IValidator<CityUpdateResource>, CityUpdateResourceValidator>();
             services.AddTransient<IValidator<CountryAddResource>, CountryAddResourceValidator>();
+
+            services.AddTransient<IValidator<ProductAddResource>, ProductAddOrUpdateResourceValidator<ProductAddResource>>();
+            services.AddTransient<IValidator<ProductUpdateResource>, ProductAddOrUpdateResourceValidator<ProductUpdateResource>>();
 
             var propertyMappingContainer = new PropertyMappingContainer();
             propertyMappingContainer.Register<CountryPropertyMapping>();

@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Reflection;
 using Microsoft.AspNetCore;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.DependencyInjection;
@@ -35,6 +36,7 @@ namespace Restful.Api
             WebHost.CreateDefaultBuilder(args)
                 .UseIISIntegration()
                 .UseUrls("http://localhost:6000", "https://localhost:6001")
-                .UseStartup<Startup>();
+                // .UseStartup<Startup>()
+                .UseStartup(typeof(Startup).GetTypeInfo().Assembly.FullName); // Multiple Environments (Multiple Startups)
     }
 }

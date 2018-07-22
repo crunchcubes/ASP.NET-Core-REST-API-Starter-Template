@@ -1,16 +1,9 @@
-﻿using System;
-using System.Collections.Generic;
-using System.IO;
-using AspNetCoreRateLimit;
+﻿using System.IO;
 using FluentValidation.AspNetCore;
-using IdentityServer4.AccessTokenValidation;
-using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Mvc.Authorization;
-using Microsoft.AspNetCore.Mvc.Cors.Internal;
 using Microsoft.AspNetCore.Mvc.Infrastructure;
 using Microsoft.AspNetCore.Mvc.Routing;
 using Microsoft.EntityFrameworkCore;
@@ -26,12 +19,12 @@ using Serilog.Events;
 
 namespace Restful.Api
 {
-    public class Startup
+    public class StartupIntegrationTest
     {
         public static IConfiguration Configuration { get; set; }
         private readonly ILoggerFactory _loggerFactory;
 
-        public Startup(IConfiguration configuration, ILoggerFactory loggerFactory)
+        public StartupIntegrationTest(IConfiguration configuration, ILoggerFactory loggerFactory)
         {
             Log.Logger = new LoggerConfiguration()
                 .MinimumLevel.Debug()
@@ -61,7 +54,6 @@ namespace Restful.Api
 
             services.AddDbContext<MyContext>(options =>
             {
-                // options.UseSqlServer(Configuration["ConnectionStrings:DefaultConnection"]);
                 options.UseInMemoryDatabase("RESTfulAPI");
                 options.UseLoggerFactory(_loggerFactory);
             });
@@ -85,76 +77,13 @@ namespace Restful.Api
 
             services.AddResponseCaching();
 
-            services
-                .AddAuthentication(IdentityServerAuthenticationDefaults.AuthenticationScheme)
-                .AddIdentityServerAuthentication(options =>
-                {
-                    options.Authority = "https://localhost:5001";
-                    options.ApiName = "restapi";
-                });
-
-            services.AddHsts(options =>
-            {
-                options.Preload = true;
-                options.IncludeSubDomains = true;
-                options.MaxAge = TimeSpan.FromDays(60);
-                // options.ExcludedHosts.Add("example.com");
-                // options.ExcludedHosts.Add("www.example.com");
-            });
-            
-            services.AddHttpsRedirection(options =>
-            {
-                options.RedirectStatusCode = StatusCodes.Status301MovedPermanently;
-                options.HttpsPort = 6001;
-            });
-
-            services.AddCors(options =>
-            {
-                options.AddPolicy("AllowAngularDevOrigin",
-                    builder => builder.WithOrigins("http://localhost:4200")
-                    .AllowAnyHeader()
-                    .AllowAnyMethod());
-            });
-
-            services.Configure<MvcOptions>(options =>
-            {
-                options.Filters.Add(new CorsAuthorizationFilterFactory("AllowAngularDevOrigin"));
-
-                var policy = new AuthorizationPolicyBuilder()
-                    .RequireAuthenticatedUser()
-                    .Build();
-                // options.Filters.Add(new AuthorizeFilter(policy));
-            });
-
             services.AddMemoryCache();
-            services.Configure<IpRateLimitOptions>(options =>
-            {
-                options.GeneralRules = new List<RateLimitRule>
-                {
-                    new RateLimitRule
-                    {
-                        Endpoint = "*",
-                        Limit = 100,
-                        Period = "1m"
-                    }
-                };
-            });
-            services.AddSingleton<IRateLimitCounterStore, MemoryCacheRateLimitCounterStore>();
-            services.AddSingleton<IIpPolicyStore, MemoryCacheIpPolicyStore>();
-
             services.AddMyServices();
         }
 
         public void Configure(IApplicationBuilder app, IHostingEnvironment env)
         {
             app.UseMyExceptionHandler(_loggerFactory);
-            if (!env.IsDevelopment())
-            {
-                app.UseHsts();
-            }
-            // app.UseIpRateLimiting();
-            app.UseCors("AllowAngularDevOrigin");
-            // app.UseHttpsRedirection();
             // app.UseAuthentication();
             app.UseResponseCaching();
             app.UseHttpCacheHeaders();

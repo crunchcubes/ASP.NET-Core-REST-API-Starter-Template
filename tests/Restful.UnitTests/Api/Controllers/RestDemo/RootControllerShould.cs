@@ -2,6 +2,7 @@
 using Microsoft.AspNetCore.Mvc;
 using Moq;
 using Restful.Api.Controllers;
+using Restful.Api.Controllers.RestDemo;
 using Restful.Infrastructure.Resources.Hateoas;
 using Xunit;
 
