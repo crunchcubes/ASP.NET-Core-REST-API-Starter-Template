@@ -1,15 +1,20 @@
 ﻿using System.IO;
+using System.Text;
 using FluentValidation.AspNetCore;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.Authorization;
 using Microsoft.AspNetCore.Mvc.Infrastructure;
 using Microsoft.AspNetCore.Mvc.Routing;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
+using Microsoft.IdentityModel.Tokens;
 using Newtonsoft.Json.Serialization;
 using Restful.Api.Helpers;
 using Restful.Infrastructure.Database;
@@ -65,28 +70,37 @@ namespace Restful.Api
                 return new UrlHelper(actionContext);
             });
 
-            services.AddHttpCacheHeaders(
-                expirationModelOptions =>
+            services.Configure<MvcOptions>(options =>
+            {
+                var policy = new AuthorizationPolicyBuilder()
+                    .RequireAuthenticatedUser()
+                    .Build();
+                options.Filters.Add(new AuthorizeFilter(policy));
+            });
+
+            services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
+                .AddJwtBearer(options =>
                 {
-                    expirationModelOptions.MaxAge = 300;
-                },
-                validationModelOptions =>
-                {
-                    validationModelOptions.AddMustRevalidate = true;
+                    options.TokenValidationParameters = new TokenValidationParameters
+                    {
+                        IssuerSigningKey = ServerSecret,
+                        ValidIssuer = "issuer",
+                        ValidAudience = "audience"
+                    };
                 });
 
-            services.AddResponseCaching();
-
-            services.AddMemoryCache();
             services.AddMyServices();
+        }
+
+        public static SymmetricSecurityKey ServerSecret
+        {
+            get => new SymmetricSecurityKey(Encoding.UTF8.GetBytes("qwertyuiopasdfghjklzxcvbnm123456"));
         }
 
         public void Configure(IApplicationBuilder app, IHostingEnvironment env)
         {
             app.UseMyExceptionHandler(_loggerFactory);
-            // app.UseAuthentication();
-            app.UseResponseCaching();
-            app.UseHttpCacheHeaders();
+            app.UseAuthentication();
 
             app.UseMvc();
         }

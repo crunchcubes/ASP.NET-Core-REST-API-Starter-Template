@@ -19,7 +19,7 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "tests", "tests", "{C100DC72
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Restful.UnitTests", "tests\Restful.UnitTests\Restful.UnitTests.csproj", "{7C851EA3-132D-453D-9266-9983DAD7C3D0}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Restful.IntegrationTests", "Restful.IntegrationTests\Restful.IntegrationTests.csproj", "{6D064708-CA06-4C22-B048-68A71D80930D}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Restful.IntegrationTests", "tests\Restful.IntegrationTests\Restful.IntegrationTests.csproj", "{6D064708-CA06-4C22-B048-68A71D80930D}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

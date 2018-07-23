@@ -23,6 +23,30 @@ namespace Restful.IntegrationTests.Controllers.Milk
         }
 
         [Fact]
+        public async Task UnauthorizedWhenTokenNotValid()
+        {
+            var postRequest = new HttpRequestMessage(HttpMethod.Post, "/api/products");
+            postRequest.Headers.Add("Accept", "application/vnd.solenovex.product.display+json");
+            postRequest.Headers.Add("Authorization", "Bearer InvalidToken....");
+            postRequest.Content = new StringContent(
+                JsonConvert.SerializeObject(new ProductAddResource
+                {
+                    Name = "Milk",
+                    OrderUnit = OrderUnit.ByBox,
+                    PackingType = PackingType.GlassBottle,
+                    MinimumOrderQuantity = 1,
+                    QuantityPerBox = 10,
+                    UnitPrice = 5m
+                }));
+            postRequest.Content.Headers.ContentType =
+                new MediaTypeHeaderValue("application/vnd.solenovex.product.create+json");
+
+            var response = await _fixture.Client.SendAsync(postRequest);
+
+            Assert.Equal(HttpStatusCode.Unauthorized, response.StatusCode);
+        }
+
+        [Fact]
         public async Task SuccessWhenValid()
         {
             var postRequest = new HttpRequestMessage(HttpMethod.Post, "/api/products");
@@ -37,7 +61,7 @@ namespace Restful.IntegrationTests.Controllers.Milk
                     QuantityPerBox = 10,
                     UnitPrice = 5m
                 }));
-            postRequest.Content.Headers.ContentType = 
+            postRequest.Content.Headers.ContentType =
                 new MediaTypeHeaderValue("application/vnd.solenovex.product.create+json");
 
             var response = await _fixture.Client.SendAsync(postRequest);

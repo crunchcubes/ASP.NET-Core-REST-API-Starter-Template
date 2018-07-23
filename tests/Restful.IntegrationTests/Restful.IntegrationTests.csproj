@@ -16,7 +16,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\src\Restful.Api\Restful.Api.csproj" />
+    <ProjectReference Include="..\..\src\Restful.Api\Restful.Api.csproj" />
   </ItemGroup>
 
 </Project>
