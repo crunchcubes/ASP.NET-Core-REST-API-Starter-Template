@@ -6,14 +6,12 @@ using AutoMapper;
 using Microsoft.AspNetCore.JsonPatch;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
-using Restful.Core.Entities;
 using Restful.Core.Entities.RestDemo;
 using Restful.Core.Interfaces;
-using Restful.Infrastructure.Resources;
 using Restful.Infrastructure.Resources.Hateoas;
 using Restful.Infrastructure.Resources.RestDemo;
 
-namespace Restful.Api.Controllers
+namespace Restful.Api.Controllers.RestDemo
 {
     [Route("api/countries/{countryId}/cities")]
     public class CityController : Controller
