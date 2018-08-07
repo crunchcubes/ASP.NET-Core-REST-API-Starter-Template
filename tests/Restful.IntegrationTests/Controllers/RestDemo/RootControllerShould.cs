@@ -3,15 +3,14 @@ using System.Linq;
 using System.Net;
 using System.Net.Http;
 using System.Threading.Tasks;
-using Microsoft.AspNetCore.Mvc.Testing;
 using Newtonsoft.Json;
-using Restful.Api;
 using Restful.Infrastructure.Resources.Hateoas;
 using Xunit;
 
 namespace Restful.IntegrationTests.Controllers.RestDemo
 {
-    public class RootControllerShould : IClassFixture<TestServerFixture>
+    [Collection("my collection")]
+    public class RootControllerShould
     {
         private readonly TestServerFixture _fixture;
 
@@ -35,8 +34,9 @@ namespace Restful.IntegrationTests.Controllers.RestDemo
         [Fact]
         public async Task ReturnLinkResourceListWhenSpecificMediaType()
         {
-            _fixture.Client.DefaultRequestHeaders.Add("Accept", "application/vnd.solenovex.hateoas+json");
-            var response = await _fixture.Client.GetAsync("/api");
+            var postRequest = new HttpRequestMessage(HttpMethod.Get, "/api");
+            postRequest.Headers.Add("Accept", "application/vnd.solenovex.hateoas+json");
+            var response = await _fixture.Client.SendAsync(postRequest);
 
             response.EnsureSuccessStatusCode();
 

@@ -1,6 +1,7 @@
 ﻿using AutoMapper;
 using FluentValidation;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.DependencyInjection.Extensions;
 using Restful.Core.Entities.Milk;
 using Restful.Core.Interfaces;
 using Restful.Core.Interfaces.Milk;
@@ -23,34 +24,35 @@ namespace Restful.Infrastructure.Extensions
     {
         public static void AddMyServices(this IServiceCollection services)
         {
+            Mapper.Reset();
             services.AddAutoMapper();
 
-            services.AddTransient<IValidator<CityAddResource>, CityAddOrUpdateResourceValidator<CityAddResource>>();
-            services.AddTransient<IValidator<CityUpdateResource>, CityUpdateResourceValidator>();
-            services.AddTransient<IValidator<CountryAddResource>, CountryAddResourceValidator>();
+            services.TryAddTransient<IValidator<CityAddResource>, CityAddOrUpdateResourceValidator<CityAddResource>>();
+            services.TryAddTransient<IValidator<CityUpdateResource>, CityUpdateResourceValidator>();
+            services.TryAddTransient<IValidator<CountryAddResource>, CountryAddResourceValidator>();
 
-            services.AddTransient<IValidator<ProductAddResource>, ProductAddOrUpdateResourceValidator<ProductAddResource>>();
-            services.AddTransient<IValidator<ProductUpdateResource>, ProductAddOrUpdateResourceValidator<ProductUpdateResource>>();
+            services.TryAddTransient<IValidator<ProductAddResource>, ProductAddOrUpdateResourceValidator<ProductAddResource>>();
+            services.TryAddTransient<IValidator<ProductUpdateResource>, ProductAddOrUpdateResourceValidator<ProductUpdateResource>>();
 
             var propertyMappingContainer = new PropertyMappingContainer();
             propertyMappingContainer.Register<CountryPropertyMapping>();
             propertyMappingContainer.Register<ProductPropertyMapping>();
 
-            services.AddSingleton<IPropertyMappingContainer>(propertyMappingContainer);
-            services.AddTransient<ITypeHelperService, TypeHelperService>();
+            services.TryAddSingleton<IPropertyMappingContainer>(propertyMappingContainer);
+            services.TryAddTransient<ITypeHelperService, TypeHelperService>();
 
-            services.AddScoped(typeof(IRepository<>), typeof(EfRepository<>));
-            services.AddScoped(typeof(IEnhancedRepository<>), typeof(EfEnhancedRepository<>));
+            services.TryAddScoped(typeof(IRepository<>), typeof(EfRepository<>));
+            services.TryAddScoped(typeof(IEnhancedRepository<>), typeof(EfEnhancedRepository<>));
 
-            services.AddScoped<ICountryRepository, CountryRepository>();
-            services.AddScoped<ICityRepository, CityRepository>();
+            services.TryAddScoped<ICountryRepository, CountryRepository>();
+            services.TryAddScoped<ICityRepository, CityRepository>();
 
-            services.AddScoped<IProductRepository, ProductRepository>();
+            services.TryAddScoped<IProductRepository, ProductRepository>();
 
-            services.AddScoped<IUnitOfWork, UnitOfWork>();
+            services.TryAddScoped<IUnitOfWork, UnitOfWork>();
 
-            services.AddTransient<IOrderValidator, OrderValidator>();
-            services.AddTransient<IDeliveryValidator, DeliveryValidator>();
+            services.TryAddTransient<IOrderValidator, OrderValidator>();
+            services.TryAddTransient<IDeliveryValidator, DeliveryValidator>();
         }
 
     }

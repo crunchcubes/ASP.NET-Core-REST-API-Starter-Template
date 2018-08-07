@@ -1,11 +1,7 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Net;
+﻿using System.Net;
 using System.Net.Http;
 using System.Net.Http.Headers;
-using System.Text;
 using System.Threading.Tasks;
-using Microsoft.AspNetCore.Mvc.ModelBinding;
 using Newtonsoft.Json;
 using Restful.Core.Entities.Milk;
 using Restful.Infrastructure.Resources.Milk;
@@ -13,7 +9,8 @@ using Xunit;
 
 namespace Restful.IntegrationTests.Controllers.Milk
 {
-    public class ProductControllerShould : IClassFixture<TestServerFixture>
+    [Collection("my collection")]
+    public class ProductControllerShould
     {
         private readonly TestServerFixture _fixture;
 
